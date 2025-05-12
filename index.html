@@ -13,10 +13,32 @@
       padding: 0;
     }
 
-    header {
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       background-color: #1e1e1e;
       padding: 1em;
-      text-align: center;
+    }
+
+    .logo {
+      margin: 0;
+      font-size: 1.8em;
+    }
+
+    .auth-buttons button {
+      margin-left: 0.5em;
+      padding: 0.5em 1em;
+      background-color: #00ffff;
+      color: #121212;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .auth-buttons button:hover {
+      background-color: #00cccc;
     }
 
     nav {
@@ -72,7 +94,6 @@
       height: auto;
     }
 
-    /* WERSJA MOBILNA */
     @media (max-width: 768px) {
       nav ul {
         flex-direction: column;
@@ -94,12 +115,28 @@
       nav ul li {
         padding: 1em;
       }
+
+      .header-container {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .auth-buttons {
+        margin-top: 1em;
+      }
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>RSIvsCena</h1>
+    <div class="header-container">
+      <h1 class="logo">RSIvsCena</h1>
+      <div class="auth-buttons">
+        <button id="login-btn" onclick="showLogin()">Zaloguj</button>
+        <button id="register-btn" onclick="showRegister()">Rejestracja</button>
+        <button id="logout-btn" style="display:none;" onclick="logout()">Wyloguj</button>
+      </div>
+    </div>
   </header>
 
   <div class="nav-toggle" onclick="toggleMenu()">☰ Menu</div>
@@ -155,6 +192,19 @@
 
     // Pokazanie sekcji "O grupie" przy załadowaniu strony
     window.onload = () => showSection('o-grupie');
+
+    // Tymczasowe funkcje do przycisków — wkrótce je podmienimy na Firebase
+    function showLogin() {
+      alert("Formularz logowania pojawi się tutaj (do zaimplementowania).");
+    }
+
+    function showRegister() {
+      alert("Formularz rejestracji pojawi się tutaj (do zaimplementowania).");
+    }
+
+    function logout() {
+      alert("Wylogowano (do zaimplementowania).");
+    }
   </script>
 </body>
 </html>
