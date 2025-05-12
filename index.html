@@ -7,102 +7,103 @@
   <style>
     body {
       background-color: #121212;
-      color: #fff;
+      color: #ffffff;
       font-family: Arial, sans-serif;
       margin: 0;
+      padding: 0;
     }
+
     header {
-      background-color: #1f1f1f;
-      padding: 20px;
+      background-color: #1e1e1e;
+      padding: 1em;
       text-align: center;
     }
-    header h1 {
-      margin: 0;
-    }
-    nav {
-      background-color: #2c2c2c;
+
+    nav ul {
+      list-style-type: none;
       display: flex;
       justify-content: center;
-      gap: 30px;
-      padding: 10px 0;
+      padding: 0;
+      margin: 0;
+      background-color: #2c2c2c;
     }
-    nav a {
-      color: #fff;
-      text-decoration: none;
-      font-weight: bold;
+
+    nav ul li {
+      padding: 1em 2em;
+      cursor: pointer;
+      transition: background-color 0.3s;
     }
-    nav a:hover {
-      text-decoration: underline;
+
+    nav ul li:hover {
+      background-color: #444;
     }
+
+    main {
+      padding: 2em;
+    }
+
     section {
-      padding: 30px;
-      max-width: 900px;
-      margin: 0 auto;
+      display: none;
     }
-    footer {
-      background-color: #1f1f1f;
-      text-align: center;
-      padding: 20px;
-      font-size: 0.9em;
+
+    section.active {
+      display: block;
     }
-    img {
-      max-width: 100%;
-      height: auto;
-    }
-    .video {
-      margin-top: 15px;
+
+    h2 {
+      color: #00ffff;
     }
   </style>
 </head>
 <body>
   <header>
     <h1>RSIvsCena</h1>
-    <p>Analiza techniczna • Edukacja • Dyskusje</p>
   </header>
 
   <nav>
-    <a href="#o-grupie">O grupie</a>
-    <a href="#Edukacja">Edukacja</a>
-    <a href="#webinary">Webinary</a>
-    <a href="#kontakt">Kontakt</a>
+    <ul>
+      <li onclick="showSection('o-grupie')">O grupie</li>
+      <li onclick="showSection('setupy')">Setupy</li>
+      <li onclick="showSection('edukacja')">Edukacja</li>
+      <li onclick="showSection('kontakt')">Kontakt</li>
+    </ul>
   </nav>
 
-  <section id="o-grupie">
-    <h2>O grupie</h2>
-    <p>
-      RSIvsCena to społeczność skupiona na analizie technicznej i edukacji traderów.
-      Dzielimy się miejscami handlowymi na wykresach, uczymy i wspólnie analizujemy rynki.
-    </p>
-    <p>
-      Grupa ma charakter edukacyjny i nie świadczy usług doradztwa inwestycyjnego.
-      Przeznaczona jest wyłącznie dla osób pełnoletnich.
-    </p>
-  </section>
+  <main>
+    <section id="o-grupie">
+      <h2>O grupie</h2>
+      <p>
+        Tu pojawi się opis Twojej grupy RSIvsCena.
+      </p>
+    </section>
 
-  <section id="Edukacja">
-    <h2>Edukacja</h2>
-    <p>Tu znajdziesz materiały pomocne w nauce analizy technicznej</p>
-    <img src="https://via.placeholder.com/800x400.png?text=Przykladowa+Analiza" alt="Analiza przykładowa"/>
-  </section>
+    <section id="setupy">
+      <h2>Setupy</h2>
+      <p>
+        Tu będą publikowane wykresy i pomysły handlowe.
+      </p>
+    </section>
 
-  <section id="webinary">
-    <h2>Webinary</h2>
-    <p>Obejrzyj nasze materiały wideo:</p>
-    <div class="video">
-      <iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-        title="Webinar RSIvsCena" frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen></iframe>
-    </div>
-  </section>
+    <section id="edukacja">
+      <h2>Edukacja</h2>
+      <p>
+        Tu znajdziesz materiały pomocne w nauce analizy technicznej.
+      </p>
+    </section>
 
-  <section id="kontakt">
-    <h2>Kontakt</h2>
-    <p>Masz pytania? Skontaktuj się przez Discord lub wyślij e-mail na <a href="mailto:kontakt@rsivscena.pl">kontakt@rsivscena.pl</a>.</p>
-  </section>
+    <section id="kontakt">
+      <h2>Kontakt</h2>
+      <p>
+        Tu znajdziesz dane kontaktowe lub formularz kontaktowy.
+      </p>
+    </section>
+  </main>
 
-  <footer>
-    &copy; 2025 RSIvsCena. Wszelkie prawa zastrzeżone.
-  </footer>
+  <script>
+    function showSection(id) {
+      document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+  </script>
 </body>
 </html>
