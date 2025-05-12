@@ -70,7 +70,7 @@
   </nav>
 
   <main>
-    <section id="o-grupie">
+    <section id="o-grupie" class="active">
       <h2>O grupie</h2>
       <p>
         Tu pojawi się opis Twojej grupy RSIvsCena.
@@ -104,6 +104,9 @@
       document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
       document.getElementById(id).classList.add('active');
     }
+
+    // Wyświetl domyślnie "O grupie" (jeśli np. odświeżono stronę)
+    window.onload = () => showSection('o-grupie');
   </script>
 </body>
 </html>
