@@ -4,6 +4,90 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>RSIvsCena</title>
+  <script type="module">
+    // Firebase setup
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
+      signOut,
+      sendPasswordResetEmail
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBwbd-OEEAWGtBgBYcYQe95ec8gNFcPxV4",
+      authDomain: "rsivscena.firebaseapp.com",
+      projectId: "rsivscena",
+      storageBucket: "rsivscena.appspot.com",
+      messagingSenderId: "1068270877442",
+      appId: "1:1068270877442:web:5d3dfe026a198ad711201b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.onload = () => {
+      const loginSection = document.getElementById("login-section");
+      const loggedInMenu = document.getElementById("logged-in-menu");
+      const setupyTab = document.getElementById("setupy-tab");
+      const edukacjaTab = document.getElementById("edukacja-tab");
+
+      onAuthStateChanged(auth, user => {
+        if (user) {
+          loginSection.style.display = "none";
+          loggedInMenu.style.display = "inline";
+          setupyTab.style.display = "inline";
+          edukacjaTab.style.display = "inline";
+        } else {
+          loginSection.style.display = "inline";
+          loggedInMenu.style.display = "none";
+          setupyTab.style.display = "none";
+          edukacjaTab.style.display = "none";
+        }
+        showSection("o-grupie");
+      });
+    };
+
+    window.login = async () => {
+      const email = prompt("Podaj e-mail:");
+      const password = prompt("Podaj hasło:");
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        alert("Zalogowano!");
+      } catch (error) {
+        alert("Błąd logowania: " + error.message);
+      }
+    };
+
+    window.register = async () => {
+      const email = prompt("Podaj e-mail:");
+      const password = prompt("Ustaw hasło:");
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        alert("Zarejestrowano!");
+      } catch (error) {
+        alert("Błąd rejestracji: " + error.message);
+      }
+    };
+
+    window.logout = async () => {
+      await signOut(auth);
+    };
+
+    window.resetPassword = async () => {
+      const email = prompt("Podaj e-mail do resetu hasła:");
+      if (email) {
+        try {
+          await sendPasswordResetEmail(auth, email);
+          alert("Wysłano e-mail do resetu hasła.");
+        } catch (error) {
+          alert("Błąd: " + error.message);
+        }
+      }
+    };
+  </script>
   <style>
     body {
       background-color: #121212;
@@ -13,45 +97,30 @@
       padding: 0;
     }
 
-    .header-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    header {
       background-color: #1e1e1e;
       padding: 1em;
+      text-align: center;
+      position: relative;
     }
 
-    .logo {
-      margin: 0;
-      font-size: 1.8em;
+    .auth-buttons {
+      position: absolute;
+      top: 1em;
+      right: 1em;
     }
 
     .auth-buttons button {
       margin-left: 0.5em;
-      padding: 0.5em 1em;
-      background-color: #00ffff;
-      color: #121212;
+      background-color: #00aaff;
+      color: white;
       border: none;
+      padding: 0.5em 1em;
       cursor: pointer;
-      border-radius: 4px;
-      font-weight: bold;
-    }
-
-    .auth-buttons button:hover {
-      background-color: #00cccc;
     }
 
     nav {
       background-color: #2c2c2c;
-    }
-
-    .nav-toggle {
-      display: none;
-      background-color: #2c2c2c;
-      color: #fff;
-      padding: 1em;
-      text-align: center;
-      cursor: pointer;
     }
 
     nav ul {
@@ -89,39 +158,14 @@
       color: #00ffff;
     }
 
-    img, video {
-      max-width: 100%;
-      height: auto;
-    }
-
     @media (max-width: 768px) {
       nav ul {
         flex-direction: column;
-        display: none;
-      }
-
-      nav ul.show {
-        display: flex;
-      }
-
-      .nav-toggle {
-        display: block;
-      }
-
-      main {
-        padding: 1em;
-      }
-
-      nav ul li {
-        padding: 1em;
-      }
-
-      .header-container {
-        flex-direction: column;
-        align-items: flex-start;
       }
 
       .auth-buttons {
+        position: static;
+        text-align: center;
         margin-top: 1em;
       }
     }
@@ -129,22 +173,24 @@
 </head>
 <body>
   <header>
-    <div class="header-container">
-      <h1 class="logo">RSIvsCena</h1>
-      <div class="auth-buttons">
-        <button id="login-btn" onclick="showLogin()">Zaloguj</button>
-        <button id="register-btn" onclick="showRegister()">Rejestracja</button>
-        <button id="logout-btn" style="display:none;" onclick="logout()">Wyloguj</button>
+    <h1>RSIvsCena</h1>
+    <div class="auth-buttons">
+      <div id="login-section">
+        <button onclick="login()">Zaloguj</button>
+        <button onclick="register()">Rejestracja</button>
+      </div>
+      <div id="logged-in-menu" style="display:none;">
+        <button onclick="logout()">Wyloguj</button>
+        <button onclick="resetPassword()">Reset hasła</button>
       </div>
     </div>
   </header>
 
-  <div class="nav-toggle" onclick="toggleMenu()">☰ Menu</div>
   <nav>
-    <ul id="nav-list">
+    <ul>
       <li onclick="showSection('o-grupie')">O grupie</li>
-      <li onclick="showSection('setupy')">Setupy</li>
-      <li onclick="showSection('edukacja')">Edukacja</li>
+      <li onclick="showSection('setupy')" id="setupy-tab">Setupy</li>
+      <li onclick="showSection('edukacja')" id="edukacja-tab">Edukacja</li>
       <li onclick="showSection('kontakt')">Kontakt</li>
     </ul>
   </nav>
@@ -152,30 +198,22 @@
   <main>
     <section id="o-grupie" class="active">
       <h2>O grupie</h2>
-      <p>
-        Tu pojawi się opis Twojej grupy RSIvsCena.
-      </p>
+      <p>Tu znajdziesz informacje o naszej grupie RSIvsCena.</p>
     </section>
 
     <section id="setupy">
       <h2>Setupy</h2>
-      <p>
-        Tu będą publikowane wykresy i pomysły handlowe.
-      </p>
+      <p>Tu będą publikowane wykresy i pomysły handlowe.</p>
     </section>
 
     <section id="edukacja">
       <h2>Edukacja</h2>
-      <p>
-        Tu znajdziesz materiały pomocne w nauce analizy technicznej.
-      </p>
+      <p>Tu znajdziesz materiały pomocne w nauce analizy technicznej.</p>
     </section>
 
     <section id="kontakt">
       <h2>Kontakt</h2>
-      <p>
-        Tu znajdziesz dane kontaktowe lub formularz kontaktowy.
-      </p>
+      <p>Tu znajdziesz dane kontaktowe lub formularz kontaktowy.</p>
     </section>
   </main>
 
@@ -183,27 +221,6 @@
     function showSection(id) {
       document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
       document.getElementById(id).classList.add('active');
-      document.getElementById('nav-list').classList.remove('show');
-    }
-
-    function toggleMenu() {
-      document.getElementById('nav-list').classList.toggle('show');
-    }
-
-    // Pokazanie sekcji "O grupie" przy załadowaniu strony
-    window.onload = () => showSection('o-grupie');
-
-    // Tymczasowe funkcje do przycisków — wkrótce je podmienimy na Firebase
-    function showLogin() {
-      alert("Formularz logowania pojawi się tutaj (do zaimplementowania).");
-    }
-
-    function showRegister() {
-      alert("Formularz rejestracji pojawi się tutaj (do zaimplementowania).");
-    }
-
-    function logout() {
-      alert("Wylogowano (do zaimplementowania).");
     }
   </script>
 </body>
