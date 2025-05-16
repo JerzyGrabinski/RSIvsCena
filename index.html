@@ -128,12 +128,12 @@
     <p>Grupa ma charakter edukacyjny i nie świadczy usług doradztwa inwestycyjnego.</p>
   </section>
 
-  <section id="analizy">
+  <section id="analizy" style="display: none;">
     <h2>Analizy</h2>
     <img src="https://via.placeholder.com/800x400.png?text=Przykladowa+Analiza" alt="Analiza przykładowa"/>
   </section>
 
-  <section id="webinary">
+  <section id="webinary" style="display: none;">
     <h2>Webinary</h2>
     <iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ"
       title="Webinar RSIvsCena" frameborder="0" allowfullscreen></iframe>
@@ -218,6 +218,11 @@
       alert(res.ok ? "Zgłoszenie wysłane do administratora!" : "Błąd: " + data.error);
     });
 
+    function showPrivateSections() {
+      document.getElementById("analizy").style.display = "block";
+      document.getElementById("webinary").style.display = "block";
+    }
+
     document.getElementById("loginForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const email = document.getElementById("loginEmail").value;
@@ -228,7 +233,13 @@
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
-      alert(res.ok ? "Zalogowano pomyślnie!" : "Błąd logowania: " + data.error);
+      if (res.ok) {
+        alert("Zalogowano pomyślnie!");
+        modal.style.display = "none";
+        showPrivateSections();
+      } else {
+        alert("Błąd logowania: " + data.error);
+      }
     });
   </script>
 </body>
