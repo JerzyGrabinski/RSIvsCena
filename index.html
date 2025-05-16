@@ -1,10 +1,11 @@
 <script>
-  window.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", () => {
     // Pokazywanie sekcji
     function showSection(id) {
       const sections = document.querySelectorAll("section");
       sections.forEach(s => s.style.display = "none");
-      document.getElementById(id).style.display = "block";
+      const target = document.getElementById(id);
+      if (target) target.style.display = "block";
     }
 
     const modal = document.getElementById("loginModal");
@@ -15,67 +16,77 @@
     const registerContent = document.getElementById("registerContent");
     const loginContent = document.getElementById("loginContent");
 
-    loginBtn.onclick = () => modal.style.display = "block";
-    closeBtn.onclick = () => modal.style.display = "none";
+    if (loginBtn) loginBtn.onclick = () => modal.style.display = "block";
+    if (closeBtn) closeBtn.onclick = () => modal.style.display = "none";
     window.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
 
-    registerTab.onclick = () => {
-      registerTab.classList.add("active");
-      loginTab.classList.remove("active");
-      registerContent.classList.add("active");
-      loginContent.classList.remove("active");
-    };
-    loginTab.onclick = () => {
-      loginTab.classList.add("active");
-      registerTab.classList.remove("active");
-      loginContent.classList.add("active");
-      registerContent.classList.remove("active");
-    };
+    if (registerTab && loginTab && registerContent && loginContent) {
+      registerTab.onclick = () => {
+        registerTab.classList.add("active");
+        loginTab.classList.remove("active");
+        registerContent.classList.add("active");
+        loginContent.classList.remove("active");
+      };
+      loginTab.onclick = () => {
+        loginTab.classList.add("active");
+        registerTab.classList.remove("active");
+        loginContent.classList.add("active");
+        registerContent.classList.remove("active");
+      };
+    }
 
-    document.getElementById("registerForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const name = document.getElementById("name").value;
-      const email = document.getElementById("email").value;
-      try {
-        const res = await fetch("https://rvc-new-backend.onrender.com/register", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, email }),
-        });
-        const data = await res.json();
-        if (res.ok) {
-          alert("Zgłoszenie wysłane do administratora!");
-        } else {
-          alert("Błąd: " + (data.error || "Nieznany błąd"));
+    const registerForm = document.getElementById("registerForm");
+    if (registerForm) {
+      registerForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const name = document.getElementById("name")?.value;
+        const email = document.getElementById("email")?.value;
+        try {
+          const res = await fetch("https://rvc-new-backend.onrender.com/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, email }),
+          });
+          const data = await res.json();
+          if (res.ok) {
+            alert("Zgłoszenie wysłane do administratora!");
+          } else {
+            alert("Błąd: " + (data.error || "Nieznany błąd"));
+          }
+        } catch (error) {
+          alert("Błąd sieci: " + error.message);
         }
-      } catch (error) {
-        alert("Błąd sieci: " + error.message);
-      }
-    });
+      });
+    }
 
-    document.getElementById("loginForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("loginEmail").value;
-      const password = document.getElementById("tempPassword").value;
-      try {
-        const res = await fetch("https://rvc-new-backend.onrender.com/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        });
-        const data = await res.json();
-        if (res.ok) {
-          alert("Zalogowano pomyślnie!");
-          modal.style.display = "none";
-          document.getElementById("analizyLink").style.display = "inline";
-          document.getElementById("webinaryLink").style.display = "inline";
-          showSection("analizy");
-        } else {
-          alert("Błąd logowania: " + (data.error || "Nieznany błąd"));
+    const loginForm = document.getElementById("loginForm");
+    if (loginForm) {
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = document.getElementById("loginEmail")?.value;
+        const password = document.getElementById("tempPassword")?.value;
+        try {
+          const res = await fetch("https://rvc-new-backend.onrender.com/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          });
+          const data = await res.json();
+          if (res.ok) {
+            alert("Zalogowano pomyślnie!");
+            if (modal) modal.style.display = "none";
+            const analizyLink = document.getElementById("analizyLink");
+            const webinaryLink = document.getElementById("webinaryLink");
+            if (analizyLink) analizyLink.style.display = "inline";
+            if (webinaryLink) webinaryLink.style.display = "inline";
+            showSection("analizy");
+          } else {
+            alert("Błąd logowania: " + (data.error || "Nieznany błąd"));
+          }
+        } catch (error) {
+          alert("Błąd sieci: " + error.message);
         }
-      } catch (error) {
-        alert("Błąd sieci: " + error.message);
-      }
-    });
+      });
+    }
   });
 </script>
