@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>RSIvsCena</title>
   <style>
+    html {
+      scroll-behavior: smooth;
+    }
     body {
       background-color: #121212;
       color: #fff;
@@ -106,6 +109,11 @@
     .tab-content.active {
       display: block;
     }
+
+    /* Ukryj sekcje Analizy i Webinary domyślnie */
+    #analizy, #webinary {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -116,8 +124,8 @@
 
   <nav>
     <a href="#o-grupie">O grupie</a>
-    <a href="#analizy">Analizy</a>
-    <a href="#webinary">Webinary</a>
+    <a href="#analizy" id="analizyLink">Analizy</a>
+    <a href="#webinary" id="webinaryLink">Webinary</a>
     <a href="#kontakt">Kontakt</a>
     <a href="#" id="loginBtn">Zaloguj / Zarejestruj</a>
   </nav>
@@ -128,12 +136,12 @@
     <p>Grupa ma charakter edukacyjny i nie świadczy usług doradztwa inwestycyjnego.</p>
   </section>
 
-  <section id="analizy" style="display: none;">
+  <section id="analizy">
     <h2>Analizy</h2>
     <img src="https://via.placeholder.com/800x400.png?text=Przykladowa+Analiza" alt="Analiza przykładowa"/>
   </section>
 
-  <section id="webinary" style="display: none;">
+  <section id="webinary">
     <h2>Webinary</h2>
     <iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ"
       title="Webinar RSIvsCena" frameborder="0" allowfullscreen></iframe>
@@ -218,11 +226,6 @@
       alert(res.ok ? "Zgłoszenie wysłane do administratora!" : "Błąd: " + data.error);
     });
 
-    function showPrivateSections() {
-      document.getElementById("analizy").style.display = "block";
-      document.getElementById("webinary").style.display = "block";
-    }
-
     document.getElementById("loginForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const email = document.getElementById("loginEmail").value;
@@ -236,7 +239,10 @@
       if (res.ok) {
         alert("Zalogowano pomyślnie!");
         modal.style.display = "none";
-        showPrivateSections();
+
+        // 👉 Pokaż ukryte sekcje po zalogowaniu
+        document.getElementById("analizy").style.display = "block";
+        document.getElementById("webinary").style.display = "block";
       } else {
         alert("Błąd logowania: " + data.error);
       }
