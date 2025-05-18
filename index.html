@@ -52,19 +52,18 @@
     .video {
       margin-top: 15px;
     }
-    
+
     /* Styles for modal */
     .modal {
-      display: none; /* Hidden by default */
-      position: fixed; /* Stay in place */
-      z-index: 1; /* Sit on top */
+      display: none;
+      position: fixed;
+      z-index: 1;
       left: 0;
       top: 0;
-      width: 100%; /* Full width */
-      height: 100%; /* Full height */
-      overflow: auto; /* Enable scroll if needed */
-      background-color: rgb(0,0,0); /* Fallback color */
-      background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
     }
 
     .modal-content {
@@ -89,8 +88,7 @@
       text-decoration: none;
       cursor: pointer;
     }
-    
-    /* Form styling */
+
     form input, form button {
       width: 100%;
       padding: 10px;
@@ -121,7 +119,7 @@
     <a href="#analizy">Analizy</a>
     <a href="#webinary">Webinary</a>
     <a href="#kontakt">Kontakt</a>
-    <a href="#" id="loginBtn">Zaloguj / Zarejestruj</a> <!-- Login/Register Button -->
+    <a href="#" id="loginBtn">Zaloguj / Zarejestruj</a>
   </nav>
 
   <section id="o-grupie">
@@ -162,16 +160,39 @@
   <div id="loginModal" class="modal">
     <div class="modal-content">
       <span class="close">&times;</span>
-      <h2>Rejestracja</h2>
-      <form id="registerForm">
-        <label for="name">Imię i nazwisko:</label>
-        <input type="text" id="name" name="name" required>
 
-        <label for="email">Adres e-mail:</label>
-        <input type="email" id="email" name="email" required>
+      <div style="text-align:center; margin-bottom: 10px;">
+        <button id="showRegister" style="margin-right: 10px;">Rejestracja</button>
+        <button id="showLogin">Logowanie</button>
+      </div>
 
-        <button type="submit">Zarejestruj</button>
-      </form>
+      <!-- Formularz Rejestracji -->
+      <div id="registerSection">
+        <h2>Rejestracja</h2>
+        <form id="registerForm">
+          <label for="name">Imię i nazwisko:</label>
+          <input type="text" id="name" name="name" required>
+
+          <label for="email">Adres e-mail:</label>
+          <input type="email" id="email" name="email" required>
+
+          <button type="submit">Zarejestruj</button>
+        </form>
+      </div>
+
+      <!-- Formularz Logowania -->
+      <div id="loginSection" style="display:none;">
+        <h2>Logowanie</h2>
+        <form id="loginForm">
+          <label for="loginEmail">E-mail:</label>
+          <input type="email" id="loginEmail" name="loginEmail" required>
+
+          <label for="loginPassword">Hasło:</label>
+          <input type="password" id="loginPassword" name="loginPassword" required>
+
+          <button type="submit">Zaloguj</button>
+        </form>
+      </div>
     </div>
   </div>
 
@@ -180,31 +201,43 @@
   </footer>
 
   <script>
-    // Get modal element
     const modal = document.getElementById("loginModal");
     const closeBtn = document.getElementsByClassName("close")[0];
     const loginBtn = document.getElementById("loginBtn");
 
-    // Open modal
     loginBtn.onclick = function() {
       modal.style.display = "block";
     }
 
-    // Close modal
     closeBtn.onclick = function() {
       modal.style.display = "none";
     }
 
-    // Close modal if click outside
     window.onclick = function(event) {
       if (event.target == modal) {
         modal.style.display = "none";
       }
     }
 
-    // Handle registration form submission
+    // Przełączanie między formularzami
+    const showRegister = document.getElementById("showRegister");
+    const showLogin = document.getElementById("showLogin");
+    const registerSection = document.getElementById("registerSection");
+    const loginSection = document.getElementById("loginSection");
+
+    showRegister.onclick = function () {
+      registerSection.style.display = "block";
+      loginSection.style.display = "none";
+    }
+
+    showLogin.onclick = function () {
+      registerSection.style.display = "none";
+      loginSection.style.display = "block";
+    }
+
+    // Obsługa formularza rejestracji
     const registerForm = document.getElementById("registerForm");
-    
+
     registerForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       
@@ -226,6 +259,13 @@
       } else {
         alert('Wystąpił problem, spróbuj ponownie.');
       }
+    });
+
+    // Obsługa formularza logowania (backend jeszcze nieobsłużony)
+    const loginForm = document.getElementById("loginForm");
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      alert("Funkcja logowania zostanie podłączona w następnym kroku.");
     });
   </script>
 </body>
