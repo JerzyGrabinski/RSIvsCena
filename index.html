@@ -30,18 +30,15 @@
       color: #fff;
       text-decoration: none;
       font-weight: bold;
+      cursor: pointer;
     }
     nav a:hover {
       text-decoration: underline;
     }
     section {
-      display: none;
       padding: 30px;
       max-width: 900px;
       margin: 0 auto;
-    }
-    section.active {
-      display: block;
     }
     footer {
       background-color: #1f1f1f;
@@ -56,17 +53,19 @@
     .video {
       margin-top: 15px;
     }
-
+    
+    /* Styles for modal */
     .modal {
-      display: none;
-      position: fixed;
-      z-index: 1;
+      display: none; /* Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 1; /* Sit on top */
       left: 0;
       top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.4);
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      background-color: rgb(0,0,0); /* Fallback color */
+      background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
     }
 
     .modal-content {
@@ -91,7 +90,8 @@
       text-decoration: none;
       cursor: pointer;
     }
-
+    
+    /* Form styling */
     form input, form button {
       width: 100%;
       padding: 10px;
@@ -109,10 +109,6 @@
     form button:hover {
       background-color: #45a049;
     }
-
-    nav a.hidden {
-      display: none;
-    }
   </style>
 </head>
 <body>
@@ -122,14 +118,15 @@
   </header>
 
   <nav>
-    <a href="#o-grupie">O grupie</a>
-    <a href="#analizy" class="protected">Analizy</a>
-    <a href="#webinary" class="protected">Webinary</a>
-    <a href="#kontakt">Kontakt</a>
-    <a href="#" id="loginBtn">Zaloguj / Zarejestruj</a>
+    <a href="#" data-section="o-grupie">O grupie</a>
+    <a href="#" data-section="analizy">Analizy</a>
+    <a href="#" data-section="webinary">Webinary</a>
+    <a href="#" data-section="kontakt">Kontakt</a>
+    <a href="#" id="loginBtn">Zaloguj / Zarejestruj</a> <!-- Login/Register Button -->
   </nav>
 
-  <section id="o-grupie" class="active">
+  <section id="content">
+    <!-- Tutaj będzie dynamicznie ładowana zawartość -->
     <h2>O grupie</h2>
     <p>
       RSIvsCena to społeczność skupiona na analizie technicznej i edukacji traderów.
@@ -139,28 +136,6 @@
       Grupa ma charakter edukacyjny i nie świadczy usług doradztwa inwestycyjnego.
       Przeznaczona jest wyłącznie dla osób pełnoletnich.
     </p>
-  </section>
-
-  <section id="analizy">
-    <h2>Analizy</h2>
-    <p>Przykładowa analiza techniczna:</p>
-    <img src="https://via.placeholder.com/800x400.png?text=Przykladowa+Analiza" alt="Analiza przykładowa"/>
-  </section>
-
-  <section id="webinary">
-    <h2>Webinary</h2>
-    <p>Obejrzyj nasze materiały wideo:</p>
-    <div class="video">
-      <iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-        title="Webinar RSIvsCena" frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen></iframe>
-    </div>
-  </section>
-
-  <section id="kontakt">
-    <h2>Kontakt</h2>
-    <p>Masz pytania? Skontaktuj się przez Discord lub wyślij e-mail na <a href="mailto:kontakt@rsivscena.pl">kontakt@rsivscena.pl</a>.</p>
   </section>
 
   <!-- Modal Login/Register -->
@@ -185,21 +160,30 @@
   </footer>
 
   <script>
-    // Modal
+    // Modal logic
     const modal = document.getElementById("loginModal");
     const closeBtn = document.getElementsByClassName("close")[0];
     const loginBtn = document.getElementById("loginBtn");
 
-    loginBtn.onclick = () => modal.style.display = "block";
-    closeBtn.onclick = () => modal.style.display = "none";
-    window.onclick = (event) => {
-      if (event.target == modal) modal.style.display = "none";
+    loginBtn.onclick = function() {
+      modal.style.display = "block";
     }
 
-    // Formularz rejestracji
+    closeBtn.onclick = function() {
+      modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+
+    // Handle registration form submission
     const registerForm = document.getElementById("registerForm");
     registerForm.addEventListener("submit", async (e) => {
       e.preventDefault();
+
       const name = document.getElementById("name").value;
       const email = document.getElementById("email").value;
 
@@ -214,43 +198,55 @@
       if (response.ok) {
         alert('Zgłoszenie wysłane! Administrator otrzymał powiadomienie.');
         modal.style.display = "none";
-        localStorage.setItem("isLoggedIn", "true");
-        showProtectedLinks();
       } else {
         alert('Wystąpił problem, spróbuj ponownie.');
       }
     });
 
-    // Pokazywanie zakładek po zalogowaniu
-    function showProtectedLinks() {
-      document.querySelectorAll('.protected').forEach(link => link.classList.remove('hidden'));
-    }
+    // Dynamiczne ładowanie treści sekcji
+    const content = document.getElementById('content');
 
-    // Dynamiczne przełączanie sekcji
-    function showSection(hash) {
-      document.querySelectorAll("section").forEach(sec => sec.classList.remove("active"));
-      const section = document.querySelector(hash);
-      if (section) section.classList.add("active");
-    }
+    const sectionsContent = {
+      'o-grupie': `
+        <h2>O grupie</h2>
+        <p>
+          RSIvsCena to społeczność skupiona na analizie technicznej i edukacji traderów.
+          Dzielimy się miejscami handlowymi na wykresach, uczymy i wspólnie analizujemy rynki.
+        </p>
+        <p>
+          Grupa ma charakter edukacyjny i nie świadczy usług doradztwa inwestycyjnego.
+          Przeznaczona jest wyłącznie dla osób pełnoletnich.
+        </p>
+      `,
+      'analizy': `
+        <h2>Analizy</h2>
+        <p>Przykładowa analiza techniczna:</p>
+        <img src="https://via.placeholder.com/800x400.png?text=Przykladowa+Analiza" alt="Analiza przykładowa"/>
+      `,
+      'webinary': `
+        <h2>Webinary</h2>
+        <p>Obejrzyj nasze materiały wideo:</p>
+        <div class="video">
+          <iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+            title="Webinar RSIvsCena" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>
+        </div>
+      `,
+      'kontakt': `
+        <h2>Kontakt</h2>
+        <p>Masz pytania? Skontaktuj się przez Discord lub wyślij e-mail na <a href="mailto:kontakt@rsivscena.pl">kontakt@rsivscena.pl</a>.</p>
+      `
+    };
 
-    document.querySelectorAll("nav a[href^='#']").forEach(link => {
-      link.addEventListener("click", (e) => {
+    // Obsługa kliknięć w menu (zakładki)
+    document.querySelectorAll('nav a[data-section]').forEach(link => {
+      link.addEventListener('click', (e) => {
         e.preventDefault();
-        const hash = link.getAttribute("href");
-        if (link.classList.contains("protected") && localStorage.getItem("isLoggedIn") !== "true") {
-          alert("Aby uzyskać dostęp, musisz się zalogować.");
-          return;
-        }
-        showSection(hash);
+        const section = link.getAttribute('data-section');
+        content.innerHTML = sectionsContent[section];
       });
     });
-
-    // Ukryj chronione linki na starcie
-    if (localStorage.getItem("isLoggedIn") !== "true") {
-      document.querySelectorAll(".protected").forEach(link => link.classList.add("hidden"));
-    } else {
-      showProtectedLinks();
-    }
   </script>
 </body>
 </html>
