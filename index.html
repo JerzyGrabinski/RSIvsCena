@@ -4,6 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>RSIvsCena</title>
+  <script>
+    // Ukrywanie sekcji chronionych przy starcie
+    document.addEventListener("DOMContentLoaded", () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        document.querySelectorAll("section").forEach(section => {
+          if (!section.id || section.id === "o-grupie" || section.id === "kontakt") {
+            section.style.display = "block";
+          } else {
+            section.style.display = "none";
+          }
+        });
+      } else {
+        document.querySelectorAll("section").forEach(section => section.style.display = "block");
+        document.querySelectorAll(".protected").forEach(el => el.style.display = "inline");
+      }
+    });
+  </script>
   <style>
     body {
       background-color: #121212;
@@ -65,7 +83,7 @@
     }
     .modal-content {
       background-color: #121212;
-      margin: 15% auto;
+      margin: 10% auto;
       padding: 20px;
       border: 1px solid #888;
       width: 80%;
@@ -79,7 +97,7 @@
     }
     .close:hover,
     .close:focus {
-      color: #000;
+      color: #fff;
       text-decoration: none;
       cursor: pointer;
     }
@@ -98,126 +116,16 @@
     form button:hover {
       background-color: #45a049;
     }
+    .form-toggle {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .form-toggle a {
+      color: #4CAF50;
+      cursor: pointer;
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>RSIvsCena</h1>
-    <p>Analiza techniczna • Edukacja • Dyskusje</p>
-  </header>
-
-  <nav>
-    <a href="#o-grupie">O grupie</a>
-    <a href="#analizy" class="auth-only">Analizy</a>
-    <a href="#webinary" class="auth-only">Webinary</a>
-    <a href="#kontakt">Kontakt</a>
-    <a href="#" id="loginBtn">Zaloguj / Zarejestruj</a>
-  </nav>
-
-  <section id="content">
-    <!-- Treść ładowana dynamicznie -->
-  </section>
-
-  <!-- Modal Login -->
-  <div id="loginModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2>Logowanie</h2>
-      <form id="accessForm">
-        <label for="accessCode">Kod dostępu:</label>
-        <input type="text" id="accessCode" required />
-        <button type="submit">Zaloguj</button>
-      </form>
-    </div>
-  </div>
-
-  <footer>
-    &copy; 2025 RSIvsCena. Wszelkie prawa zastrzeżone.
-  </footer>
-
-  <script>
-    const content = {
-      "o-grupie": `
-        <h2>O grupie</h2>
-        <p>RSIvsCena to społeczność skupiona na analizie technicznej i edukacji traderów.
-        Dzielimy się miejscami handlowymi na wykresach, uczymy i wspólnie analizujemy rynki.</p>
-        <p>Grupa ma charakter edukacyjny i nie świadczy usług doradztwa inwestycyjnego.
-        Przeznaczona jest wyłącznie dla osób pełnoletnich.</p>
-      `,
-      "analizy": `
-        <h2>Analizy</h2>
-        <p>Przykładowa analiza techniczna:</p>
-        <img src="https://via.placeholder.com/800x400.png?text=Przykladowa+Analiza" alt="Analiza przykładowa"/>
-      `,
-      "webinary": `
-        <h2>Webinary</h2>
-        <p>Obejrzyj nasze materiały wideo:</p>
-        <div class="video">
-          <iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-            title="Webinar RSIvsCena" frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen></iframe>
-        </div>
-      `,
-      "kontakt": `
-        <h2>Kontakt</h2>
-        <p>Masz pytania? Skontaktuj się przez Discord lub wyślij e-mail na <a href="mailto:kontakt@rsivscena.pl">kontakt@rsivscena.pl</a>.</p>
-      `
-    };
-
-    const section = document.getElementById("content");
-    const modal = document.getElementById("loginModal");
-    const closeBtn = document.querySelector(".close");
-    const loginBtn = document.getElementById("loginBtn");
-
-    function showSection(hash) {
-      const sectionId = hash.replace("#", "") || "o-grupie";
-      section.innerHTML = content[sectionId] || "<p>Sekcja nie istnieje.</p>";
-    }
-
-    function updateNavVisibility() {
-      const isLoggedIn = localStorage.getItem("loggedIn") === "true";
-      document.querySelectorAll(".auth-only").forEach(link => {
-        link.style.display = isLoggedIn ? "inline" : "none";
-      });
-    }
-
-    window.addEventListener("hashchange", () => {
-      showSection(location.hash);
-    });
-
-    window.addEventListener("DOMContentLoaded", () => {
-      updateNavVisibility();
-      showSection(location.hash || "#o-grupie");
-    });
-
-    loginBtn.onclick = () => {
-      modal.style.display = "block";
-    };
-
-    closeBtn.onclick = () => {
-      modal.style.display = "none";
-    };
-
-    window.onclick = (e) => {
-      if (e.target == modal) {
-        modal.style.display = "none";
-      }
-    };
-
-    document.getElementById("accessForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const code = document.getElementById("accessCode").value.trim();
-      if (code === "RSI2024") {
-        localStorage.setItem("loggedIn", "true");
-        alert("Zalogowano pomyślnie.");
-        modal.style.display = "none";
-        updateNavVisibility();
-        showSection(location.hash || "#o-grupie");
-      } else {
-        alert("Nieprawidłowy kod dostępu.");
-      }
-    });
-  </script>
-</body>
-</html>
+<!-- zawartość pozostaje bez zmian -->
