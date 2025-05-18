@@ -1,131 +1,117 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>RSIvsCena</title>
-  <script>
-    // Ukrywanie sekcji chronionych przy starcie
-    document.addEventListener("DOMContentLoaded", () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        document.querySelectorAll("section").forEach(section => {
-          if (!section.id || section.id === "o-grupie" || section.id === "kontakt") {
-            section.style.display = "block";
-          } else {
-            section.style.display = "none";
-          }
-        });
+<script>
+  const modal = document.getElementById("loginModal");
+  const closeBtn = document.querySelector(".close");
+  const loginBtn = document.getElementById("loginBtn");
+  const loginForm = document.getElementById("loginForm");
+  const registerForm = document.getElementById("registerForm");
+  const loginFormContainer = document.getElementById("loginFormContainer");
+  const registerFormContainer = document.getElementById("registerFormContainer");
+
+  // Pokazuj modal po kliknięciu "Zaloguj / Zarejestruj"
+  loginBtn.onclick = () => {
+    modal.style.display = "block";
+    // Domyślnie pokazujemy logowanie
+    showLogin();
+  };
+
+  closeBtn.onclick = () => modal.style.display = "none";
+  window.onclick = (event) => { if (event.target == modal) modal.style.display = "none"; }
+
+  // Przełączniki formularzy
+  function showRegister() {
+    loginFormContainer.style.display = "none";
+    registerFormContainer.style.display = "block";
+  }
+
+  function showLogin() {
+    loginFormContainer.style.display = "block";
+    registerFormContainer.style.display = "none";
+  }
+
+  document.getElementById("showRegister").onclick = (e) => {
+    e.preventDefault();
+    showRegister();
+  };
+  document.getElementById("showLogin").onclick = (e) => {
+    e.preventDefault();
+    showLogin();
+  };
+
+  // Obsługa rejestracji
+  registerForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+
+    if (!name || !email) {
+      alert("Proszę wypełnić wszystkie pola.");
+      return;
+    }
+
+    try {
+      const response = await fetch("https://rvc-new-backend.onrender.com/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        alert("Zgłoszenie wysłane! Oczekuj na akceptację i kod jednorazowy e-mailem.");
+        showLogin(); // Po rejestracji wróć do logowania
       } else {
-        document.querySelectorAll("section").forEach(section => section.style.display = "block");
-        document.querySelectorAll(".protected").forEach(el => el.style.display = "inline");
+        alert(data.message || "Wystąpił błąd podczas rejestracji.");
       }
-    });
-  </script>
-  <style>
-    body {
-      background-color: #121212;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      margin: 0;
+    } catch (error) {
+      alert("Błąd sieci lub serwera: " + error.message);
     }
-    header {
-      background-color: #1f1f1f;
-      padding: 20px;
-      text-align: center;
+  });
+
+  // Obsługa logowania
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value;
+
+    if (!email || !password) {
+      alert("Proszę podać e-mail i hasło.");
+      return;
     }
-    header h1 {
-      margin: 0;
+
+    try {
+      const response = await fetch("https://rvc-new-backend.onrender.com/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("mustChangePassword", data.mustChangePassword);
+        alert("Zalogowano!" + (data.mustChangePassword ? " Musisz ustawić nowe hasło." : ""));
+        modal.style.display = "none";
+        // Pokazuj chronione zakładki po zalogowaniu
+        document.querySelectorAll(".protected").forEach(el => el.style.display = "inline");
+
+        // Jeśli trzeba zmienić hasło, przekieruj na stronę resetu
+        if (data.mustChangePassword) {
+          window.location.href = "reset.html"; // później przygotujemy tę stronę
+        }
+      } else {
+        alert(data.message || "Błąd logowania");
+      }
+    } catch (error) {
+      alert("Błąd sieci lub serwera: " + error.message);
     }
-    nav {
-      background-color: #2c2c2c;
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      padding: 10px 0;
+  });
+
+  // Po załadowaniu strony sprawdź czy użytkownik jest zalogowany i pokaż chronione zakładki
+  window.addEventListener("DOMContentLoaded", () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      document.querySelectorAll(".protected").forEach(el => el.style.display = "inline");
+    } else {
+      // Domyślnie ukryj chronione zakładki
+      document.querySelectorAll(".protected").forEach(el => el.style.display = "none");
     }
-    nav a {
-      color: #fff;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    nav a:hover {
-      text-decoration: underline;
-    }
-    section {
-      padding: 30px;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    footer {
-      background-color: #1f1f1f;
-      text-align: center;
-      padding: 20px;
-      font-size: 0.9em;
-    }
-    img {
-      max-width: 100%;
-      height: auto;
-    }
-    .video {
-      margin-top: 15px;
-    }
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.4);
-    }
-    .modal-content {
-      background-color: #121212;
-      margin: 10% auto;
-      padding: 20px;
-      border: 1px solid #888;
-      width: 80%;
-      max-width: 400px;
-    }
-    .close {
-      color: #aaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-    }
-    .close:hover,
-    .close:focus {
-      color: #fff;
-      text-decoration: none;
-      cursor: pointer;
-    }
-    form input, form button {
-      width: 100%;
-      padding: 10px;
-      margin: 5px 0;
-      border: none;
-      border-radius: 5px;
-    }
-    form button {
-      background-color: #4CAF50;
-      color: white;
-      cursor: pointer;
-    }
-    form button:hover {
-      background-color: #45a049;
-    }
-    .form-toggle {
-      text-align: center;
-      margin-top: 10px;
-    }
-    .form-toggle a {
-      color: #4CAF50;
-      cursor: pointer;
-      text-decoration: underline;
-    }
-  </style>
-</head>
-<body>
-<!-- zawartość pozostaje bez zmian -->
+  });
+</script>
