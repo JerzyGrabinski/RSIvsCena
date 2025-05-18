@@ -35,9 +35,13 @@
       text-decoration: underline;
     }
     section {
+      display: none;
       padding: 30px;
       max-width: 900px;
       margin: 0 auto;
+    }
+    section.active {
+      display: block;
     }
     footer {
       background-color: #1f1f1f;
@@ -52,19 +56,17 @@
     .video {
       margin-top: 15px;
     }
-    
-    /* Styles for modal */
+
     .modal {
-      display: none; /* Hidden by default */
-      position: fixed; /* Stay in place */
-      z-index: 1; /* Sit on top */
+      display: none;
+      position: fixed;
+      z-index: 1;
       left: 0;
       top: 0;
-      width: 100%; /* Full width */
-      height: 100%; /* Full height */
-      overflow: auto; /* Enable scroll if needed */
-      background-color: rgb(0,0,0); /* Fallback color */
-      background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
     }
 
     .modal-content {
@@ -89,8 +91,7 @@
       text-decoration: none;
       cursor: pointer;
     }
-    
-    /* Form styling */
+
     form input, form button {
       width: 100%;
       padding: 10px;
@@ -108,6 +109,10 @@
     form button:hover {
       background-color: #45a049;
     }
+
+    nav a.hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -118,13 +123,13 @@
 
   <nav>
     <a href="#o-grupie">O grupie</a>
-    <a href="#analizy">Analizy</a>
-    <a href="#webinary">Webinary</a>
+    <a href="#analizy" class="protected">Analizy</a>
+    <a href="#webinary" class="protected">Webinary</a>
     <a href="#kontakt">Kontakt</a>
-    <a href="#" id="loginBtn">Zaloguj / Zarejestruj</a> <!-- Login/Register Button -->
+    <a href="#" id="loginBtn">Zaloguj / Zarejestruj</a>
   </nav>
 
-  <section id="o-grupie">
+  <section id="o-grupie" class="active">
     <h2>O grupie</h2>
     <p>
       RSIvsCena to społeczność skupiona na analizie technicznej i edukacji traderów.
@@ -180,42 +185,27 @@
   </footer>
 
   <script>
-    // Get modal element
+    // Modal
     const modal = document.getElementById("loginModal");
     const closeBtn = document.getElementsByClassName("close")[0];
     const loginBtn = document.getElementById("loginBtn");
 
-    // Open modal
-    loginBtn.onclick = function() {
-      modal.style.display = "block";
+    loginBtn.onclick = () => modal.style.display = "block";
+    closeBtn.onclick = () => modal.style.display = "none";
+    window.onclick = (event) => {
+      if (event.target == modal) modal.style.display = "none";
     }
 
-    // Close modal
-    closeBtn.onclick = function() {
-      modal.style.display = "none";
-    }
-
-    // Close modal if click outside
-    window.onclick = function(event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
-      }
-    }
-
-    // Handle registration form submission
+    // Formularz rejestracji
     const registerForm = document.getElementById("registerForm");
-    
     registerForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      
       const name = document.getElementById("name").value;
       const email = document.getElementById("email").value;
 
       const response = await fetch('https://rvc-new-backend.onrender.com/register', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email }),
       });
 
@@ -223,10 +213,44 @@
 
       if (response.ok) {
         alert('Zgłoszenie wysłane! Administrator otrzymał powiadomienie.');
+        modal.style.display = "none";
+        localStorage.setItem("isLoggedIn", "true");
+        showProtectedLinks();
       } else {
         alert('Wystąpił problem, spróbuj ponownie.');
       }
     });
+
+    // Pokazywanie zakładek po zalogowaniu
+    function showProtectedLinks() {
+      document.querySelectorAll('.protected').forEach(link => link.classList.remove('hidden'));
+    }
+
+    // Dynamiczne przełączanie sekcji
+    function showSection(hash) {
+      document.querySelectorAll("section").forEach(sec => sec.classList.remove("active"));
+      const section = document.querySelector(hash);
+      if (section) section.classList.add("active");
+    }
+
+    document.querySelectorAll("nav a[href^='#']").forEach(link => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        const hash = link.getAttribute("href");
+        if (link.classList.contains("protected") && localStorage.getItem("isLoggedIn") !== "true") {
+          alert("Aby uzyskać dostęp, musisz się zalogować.");
+          return;
+        }
+        showSection(hash);
+      });
+    });
+
+    // Ukryj chronione linki na starcie
+    if (localStorage.getItem("isLoggedIn") !== "true") {
+      document.querySelectorAll(".protected").forEach(link => link.classList.add("hidden"));
+    } else {
+      showProtectedLinks();
+    }
   </script>
 </body>
 </html>
