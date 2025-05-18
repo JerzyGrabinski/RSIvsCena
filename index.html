@@ -2,287 +2,231 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>RSIvsCena - Strona główna</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RSIvsCena</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-    nav { background: #333; padding: 10px; }
+    body {
+      background-color: #121212;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+    }
+    header {
+      background-color: #1f1f1f;
+      padding: 20px;
+      text-align: center;
+    }
+    header h1 {
+      margin: 0;
+    }
+    nav {
+      background-color: #2c2c2c;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      padding: 10px 0;
+    }
     nav a {
-      color: white; margin-right: 15px; text-decoration: none;
+      color: #fff;
+      text-decoration: none;
       font-weight: bold;
-      cursor: pointer;
     }
-    nav a:hover { text-decoration: underline; }
-
-    section { padding: 20px; }
-    .protected { display: none; } /* domyślnie ukryte */
-
-    /* Modal styles */
-    #loginModal {
-      display: none; 
-      position: fixed; 
-      z-index: 1000; 
-      left: 0; top: 0; 
-      width: 100%; height: 100%; 
-      overflow: auto; 
-      background-color: rgba(0,0,0,0.4);
+    nav a:hover {
+      text-decoration: underline;
     }
+    section {
+      padding: 30px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    footer {
+      background-color: #1f1f1f;
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9em;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+    .video {
+      margin-top: 15px;
+    }
+    
+    /* Styles for modal */
+    .modal {
+      display: none; /* Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 1; /* Sit on top */
+      left: 0;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      background-color: rgb(0,0,0); /* Fallback color */
+      background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
     .modal-content {
-      background-color: #fefefe;
-      margin: 10% auto; 
+      background-color: #121212;
+      margin: 15% auto;
       padding: 20px;
       border: 1px solid #888;
-      width: 300px;
-      position: relative;
-      border-radius: 8px;
+      width: 80%;
+      max-width: 400px;
     }
+
     .close {
       color: #aaa;
-      position: absolute;
-      top: 10px; right: 15px;
+      float: right;
       font-size: 28px;
       font-weight: bold;
-      cursor: pointer;
     }
-    .close:hover, .close:focus {
-      color: black;
+
+    .close:hover,
+    .close:focus {
+      color: #000;
       text-decoration: none;
       cursor: pointer;
     }
-    form input {
-      width: 100%;
-      padding: 8px;
-      margin: 8px 0;
-      box-sizing: border-box;
-    }
-    form button {
+    
+    /* Form styling */
+    form input, form button {
       width: 100%;
       padding: 10px;
-      background-color: #333;
-      color: white;
+      margin: 5px 0;
       border: none;
-      cursor: pointer;
-      font-size: 16px;
-      border-radius: 4px;
+      border-radius: 5px;
     }
+
+    form button {
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+
     form button:hover {
-      background-color: #555;
-    }
-    a {
-      color: blue;
-      cursor: pointer;
-      text-decoration: underline;
-      display: inline-block;
-      margin-top: 10px;
+      background-color: #45a049;
     }
   </style>
 </head>
 <body>
+  <header>
+    <h1>RSIvsCena</h1>
+    <p>Analiza techniczna • Edukacja • Dyskusje</p>
+  </header>
 
-<nav>
-  <a href="#" id="tabAbout">O grupie</a>
-  <a href="#" class="protected" id="tabAnalizy">Analizy</a>
-  <a href="#" class="protected" id="tabWebinary">Webinary</a>
-  <a href="#" id="loginBtn">Zaloguj / Zarejestruj</a>
-</nav>
+  <nav>
+    <a href="#o-grupie">O grupie</a>
+    <a href="#analizy">Analizy</a>
+    <a href="#webinary">Webinary</a>
+    <a href="#kontakt">Kontakt</a>
+    <a href="#" id="loginBtn">Zaloguj / Zarejestruj</a> <!-- Login/Register Button -->
+  </nav>
 
-<section id="content">
-  <div id="about" class="tabContent">
-    <h1>O grupie RSIvsCena</h1>
-    <p>Witamy na stronie grupy RSIvsCena, gdzie uczymy się analizy technicznej i szukamy miejsc handlowych na wykresach.</p>
-  </div>
+  <section id="o-grupie">
+    <h2>O grupie</h2>
+    <p>
+      RSIvsCena to społeczność skupiona na analizie technicznej i edukacji traderów.
+      Dzielimy się miejscami handlowymi na wykresach, uczymy i wspólnie analizujemy rynki.
+    </p>
+    <p>
+      Grupa ma charakter edukacyjny i nie świadczy usług doradztwa inwestycyjnego.
+      Przeznaczona jest wyłącznie dla osób pełnoletnich.
+    </p>
+  </section>
 
-  <div id="analizy" class="tabContent protected" style="display:none;">
-    <h1>Analizy</h1>
-    <p>Tutaj znajdziesz analizy techniczne i sygnały rynkowe dostępne dla zalogowanych użytkowników.</p>
-  </div>
+  <section id="analizy">
+    <h2>Analizy</h2>
+    <p>Przykładowa analiza techniczna:</p>
+    <img src="https://via.placeholder.com/800x400.png?text=Przykladowa+Analiza" alt="Analiza przykładowa"/>
+  </section>
 
-  <div id="webinary" class="tabContent protected" style="display:none;">
-    <h1>Webinary</h1>
-    <p>Webinary i materiały edukacyjne dostępne po zalogowaniu.</p>
-  </div>
-</section>
-
-<!-- Modal logowania/rejestracji -->
-<div id="loginModal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-
-    <div id="loginFormContainer">
-      <form id="loginForm">
-        <input type="email" id="loginEmail" placeholder="E-mail" required />
-        <input type="password" id="loginPassword" placeholder="Hasło" required />
-        <button type="submit">Zaloguj się</button>
-      </form>
-      <a href="#" id="showRegister">Nie masz konta? Zarejestruj się</a>
+  <section id="webinary">
+    <h2>Webinary</h2>
+    <p>Obejrzyj nasze materiały wideo:</p>
+    <div class="video">
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+        title="Webinar RSIvsCena" frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen></iframe>
     </div>
+  </section>
 
-    <div id="registerFormContainer" style="display:none;">
+  <section id="kontakt">
+    <h2>Kontakt</h2>
+    <p>Masz pytania? Skontaktuj się przez Discord lub wyślij e-mail na <a href="mailto:kontakt@rsivscena.pl">kontakt@rsivscena.pl</a>.</p>
+  </section>
+
+  <!-- Modal Login/Register -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Rejestracja</h2>
       <form id="registerForm">
-        <input type="text" id="name" placeholder="Imię i nazwisko" required />
-        <input type="email" id="email" placeholder="E-mail" required />
-        <button type="submit">Zarejestruj się</button>
+        <label for="name">Imię i nazwisko:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="email">Adres e-mail:</label>
+        <input type="email" id="email" name="email" required>
+
+        <button type="submit">Zarejestruj</button>
       </form>
-      <a href="#" id="showLogin">Masz konto? Zaloguj się</a>
     </div>
   </div>
-</div>
 
-<script>
-  const modal = document.getElementById("loginModal");
-  const closeBtn = document.querySelector(".close");
-  const loginBtn = document.getElementById("loginBtn");
-  const loginForm = document.getElementById("loginForm");
-  const registerForm = document.getElementById("registerForm");
-  const loginFormContainer = document.getElementById("loginFormContainer");
-  const registerFormContainer = document.getElementById("registerFormContainer");
+  <footer>
+    &copy; 2025 RSIvsCena. Wszelkie prawa zastrzeżone.
+  </footer>
 
-  // Pokazuj modal po kliknięciu "Zaloguj / Zarejestruj"
-  loginBtn.onclick = () => {
-    modal.style.display = "block";
-    // Domyślnie pokazujemy logowanie
-    showLogin();
-  };
+  <script>
+    // Get modal element
+    const modal = document.getElementById("loginModal");
+    const closeBtn = document.getElementsByClassName("close")[0];
+    const loginBtn = document.getElementById("loginBtn");
 
-  closeBtn.onclick = () => modal.style.display = "none";
-  window.onclick = (event) => { if (event.target == modal) modal.style.display = "none"; }
-
-  // Przełączniki formularzy
-  function showRegister() {
-    loginFormContainer.style.display = "none";
-    registerFormContainer.style.display = "block";
-  }
-
-  function showLogin() {
-    loginFormContainer.style.display = "block";
-    registerFormContainer.style.display = "none";
-  }
-
-  document.getElementById("showRegister").onclick = (e) => {
-    e.preventDefault();
-    showRegister();
-  };
-  document.getElementById("showLogin").onclick = (e) => {
-    e.preventDefault();
-    showLogin();
-  };
-
-  // Obsługa rejestracji
-  registerForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const name = document.getElementById("name").value.trim();
-    const email = document.getElementById("email").value.trim();
-
-    if (!name || !email) {
-      alert("Proszę wypełnić wszystkie pola.");
-      return;
+    // Open modal
+    loginBtn.onclick = function() {
+      modal.style.display = "block";
     }
 
-    try {
-      const response = await fetch("https://rvc-new-backend.onrender.com/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email })
-      });
-      const data = await response.json();
-      if (response.ok) {
-        alert("Zgłoszenie wysłane! Oczekuj na akceptację i kod jednorazowy e-mailem.");
-        showLogin();
-      } else {
-        alert(data.message || "Wystąpił błąd podczas rejestracji.");
-      }
-    } catch (error) {
-      alert("Błąd sieci lub serwera: " + error.message);
-    }
-  });
-
-  // Obsługa logowania
-  loginForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const email = document.getElementById("loginEmail").value.trim();
-    const password = document.getElementById("loginPassword").value;
-
-    if (!email || !password) {
-      alert("Proszę podać e-mail i hasło.");
-      return;
+    // Close modal
+    closeBtn.onclick = function() {
+      modal.style.display = "none";
     }
 
-    try {
-      const response = await fetch("https://rvc-new-backend.onrender.com/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
-      });
-      const data = await response.json();
-      if (response.ok) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("mustChangePassword", data.mustChangePassword);
-        alert("Zalogowano!" + (data.mustChangePassword ? " Musisz ustawić nowe hasło." : ""));
+    // Close modal if click outside
+    window.onclick = function(event) {
+      if (event.target == modal) {
         modal.style.display = "none";
-        // Pokazuj chronione zakładki po zalogowaniu
-        document.querySelectorAll(".protected").forEach(el => el.style.display = "inline");
-
-        if (data.mustChangePassword) {
-          window.location.href = "reset.html"; 
-        }
-      } else {
-        alert(data.message || "Błąd logowania");
       }
-    } catch (error) {
-      alert("Błąd sieci lub serwera: " + error.message);
-    }
-  });
-
-  // Po załadowaniu strony - obsługa nawigacji i sprawdzanie statusu logowania
-  window.addEventListener("DOMContentLoaded", () => {
-    // Pokazujemy domyślnie zakładkę "O grupie"
-    showTab("about");
-
-    // Jeśli token jest w localStorage, pokaz chronione zakładki
-    if (localStorage.getItem("token")) {
-      document.querySelectorAll(".protected").forEach(el => el.style.display = "inline");
-      loginBtn.textContent = "Wyloguj się";
     }
 
-    // Obsługa kliknięć w zakładki
-    document.getElementById("tabAbout").onclick = () => showTab("about");
-    document.getElementById("tabAnalizy").onclick = () => {
-      if (!localStorage.getItem("token")) {
-        alert("Musisz się zalogować, aby zobaczyć tę zakładkę.");
-        return;
-      }
-      showTab("analizy");
-    };
-    document.getElementById("tabWebinary").onclick = () => {
-      if (!localStorage.getItem("token")) {
-        alert("Musisz się zalogować, aby zobaczyć tę zakładkę.");
-        return;
-      }
-      showTab("webinary");
-    };
+    // Handle registration form submission
+    const registerForm = document.getElementById("registerForm");
+    
+    registerForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
 
-    // Wylogowanie
-    loginBtn.onclick = () => {
-      if (localStorage.getItem("token")) {
-        localStorage.clear();
-        alert("Wylogowano.");
-        // Ukryj chronione zakładki i wróć do "O grupie"
-        document.querySelectorAll(".protected").forEach(el => el.style.display = "none");
-        showTab("about");
-        loginBtn.textContent = "Zaloguj / Zarejestruj";
+      const response = await fetch('https://rvc-new-backend.onrender.com/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert('Zgłoszenie wysłane! Administrator otrzymał powiadomienie.');
       } else {
-        modal.style.display = "block";
-        showLogin();
+        alert('Wystąpił problem, spróbuj ponownie.');
       }
-    };
-  });
-
-  function showTab(tabName) {
-    document.querySelectorAll(".tabContent").forEach(div => div.style.display = "none");
-    const tab = document.getElementById(tabName);
-    if (tab) tab.style.display = "block";
-  }
-</script>
-
+    });
+  </script>
 </body>
 </html>
