@@ -39,6 +39,10 @@
       padding: 30px;
       max-width: 900px;
       margin: 0 auto;
+      display: none; /* Ukryj wszystkie sekcje domyślnie */
+    }
+    section.active {
+      display: block; /* Pokaż aktywną sekcję */
     }
     footer {
       background-color: #1f1f1f;
@@ -74,6 +78,7 @@
       border: 1px solid #888;
       width: 80%;
       max-width: 400px;
+      color: #fff;
     }
 
     .close {
@@ -81,11 +86,12 @@
       float: right;
       font-size: 28px;
       font-weight: bold;
+      cursor: pointer;
     }
 
     .close:hover,
     .close:focus {
-      color: #000;
+      color: #fff;
       text-decoration: none;
       cursor: pointer;
     }
@@ -96,12 +102,14 @@
       margin: 5px 0;
       border: none;
       border-radius: 5px;
+      font-size: 1em;
     }
 
     form button {
       background-color: #4CAF50;
       color: white;
       cursor: pointer;
+      font-weight: bold;
     }
 
     form button:hover {
@@ -116,14 +124,15 @@
   </header>
 
   <nav>
-    <a href="#o-grupie" id="linkOgrupie">O grupie</a>
-    <a href="#analizy" id="linkAnalizy" style="display:none;">Analizy</a>
-    <a href="#webinary" id="linkWebinary" style="display:none;">Webinary</a>
-    <a href="#kontakt" id="linkKontakt">Kontakt</a>
+    <a href="#o-grupie" id="link-o-grupie">O grupie</a>
+    <a href="#analizy" id="link-analizy">Analizy</a>
+    <a href="#webinary" id="link-webinary">Webinary</a>
+    <a href="#kontakt" id="link-kontakt">Kontakt</a>
     <a href="#" id="loginBtn">Zaloguj / Zarejestruj</a>
+    <a href="#" id="logoutBtn" style="display:none;">Wyloguj</a>
   </nav>
 
-  <section id="o-grupie">
+  <section id="o-grupie" class="active">
     <h2>O grupie</h2>
     <p>
       RSIvsCena to społeczność skupiona na analizie technicznej i edukacji traderów.
@@ -135,13 +144,13 @@
     </p>
   </section>
 
-  <section id="analizy" style="display:none;">
+  <section id="analizy">
     <h2>Analizy</h2>
     <p>Przykładowa analiza techniczna:</p>
     <img src="https://via.placeholder.com/800x400.png?text=Przykladowa+Analiza" alt="Analiza przykładowa"/>
   </section>
 
-  <section id="webinary" style="display:none;">
+  <section id="webinary">
     <h2>Webinary</h2>
     <p>Obejrzyj nasze materiały wideo:</p>
     <div class="video">
@@ -152,7 +161,7 @@
     </div>
   </section>
 
-  <section id="kontakt">
+  <section id="kontakt" class="active">
     <h2>Kontakt</h2>
     <p>Masz pytania? Skontaktuj się przez Discord lub wyślij e-mail na <a href="mailto:kontakt@rsivscena.pl">kontakt@rsivscena.pl</a>.</p>
   </section>
@@ -202,127 +211,149 @@
   </footer>
 
   <script>
+    // Elementy modal, przyciski itp.
     const modal = document.getElementById("loginModal");
     const closeBtn = document.getElementsByClassName("close")[0];
     const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
 
-    // Linki i sekcje
-    const linkAnalizy = document.getElementById("linkAnalizy");
-    const linkWebinary = document.getElementById("linkWebinary");
-    const sectionAnalizy = document.getElementById("analizy");
-    const sectionWebinary = document.getElementById("webinary");
-
-    // Pokaż modal logowania/rejestracji
-    loginBtn.onclick = function(e) {
-      e.preventDefault();
-      if (isLoggedIn()) {
-        logout();
-      } else {
-        modal.style.display = "block";
-      }
-    }
-
-    closeBtn.onclick = function() {
-      modal.style.display = "none";
-    }
-
-    window.onclick = function(event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
-      }
-    }
-
-    // Przełączanie między formularzami
     const showRegister = document.getElementById("showRegister");
     const showLogin = document.getElementById("showLogin");
     const registerSection = document.getElementById("registerSection");
     const loginSection = document.getElementById("loginSection");
 
-    showRegister.onclick = function () {
-      registerSection.style.display = "block";
-      loginSection.style.display = "none";
-    }
+    const navLinks = document.querySelectorAll('nav a[href^="#"]');
+    const sections = ['o-grupie', 'analizy', 'webinary', 'kontakt'];
 
-    showLogin.onclick = function () {
-      registerSection.style.display = "none";
-      loginSection.style.display = "block";
-    }
+    // Stan zalogowania (na potrzeby demo; można zastąpić prawdziwym auth)
+    let loggedIn = false;
 
-    // Symulacja rejestracji - wyślij maila (tu pokazujemy alert)
-    document.getElementById("registerForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const name = e.target.name.value.trim();
-      const email = e.target.email.value.trim();
-
-      if (!name || !email) {
-        alert("Proszę wypełnić wszystkie pola.");
-        return;
-      }
-
-      alert(`Dziękujemy za rejestrację, ${name}!\nNa adres ${email} został wysłany mail z prośbą o zatwierdzenie.`);
-      modal.style.display = "none";
-    });
-
-    // Symulacja logowania (tu po prostu ustawi lokalnie)
-    document.getElementById("loginForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const email = e.target.loginEmail.value.trim();
-      const password = e.target.loginPassword.value.trim();
-
-      // Prosta symulacja: akceptujemy każde dane
-      if (email && password) {
-        localStorage.setItem("rsivscena_logged_in", "true");
-        modal.style.display = "none";
-        updateUI();
-      } else {
-        alert("Proszę podać e-mail i hasło.");
-      }
-    });
-
-    function isLoggedIn() {
-      return localStorage.getItem("rsivscena_logged_in") === "true";
-    }
-
-    function logout() {
-      localStorage.removeItem("rsivscena_logged_in");
-      updateUI();
-      alert("Wylogowano.");
-    }
-
+    // Funkcja do aktualizacji widoczności zakładek i sekcji wg statusu logowania
     function updateUI() {
-      if (isLoggedIn()) {
-        linkAnalizy.style.display = "inline";
-        linkWebinary.style.display = "inline";
-        sectionAnalizy.style.display = "block";
-        sectionWebinary.style.display = "block";
-        loginBtn.textContent = "Wyloguj";
+      if (loggedIn) {
+        // Pokaż dodatkowe zakładki i wyloguj
+        document.getElementById('link-analizy').style.display = 'inline';
+        document.getElementById('link-webinary').style.display = 'inline';
+        loginBtn.style.display = 'none';
+        logoutBtn.style.display = 'inline';
+
+        // Pokaż tylko "O grupie" na start lub ostatnią klikniętą sekcję
+        showSection('o-grupie');
       } else {
-        linkAnalizy.style.display = "none";
-        linkWebinary.style.display = "none";
-        sectionAnalizy.style.display = "none";
-        sectionWebinary.style.display = "none";
-        loginBtn.textContent = "Zaloguj / Zarejestruj";
+        // Pokaż tylko podstawowe zakładki i login
+        document.getElementById('link-analizy').style.display = 'none';
+        document.getElementById('link-webinary').style.display = 'none';
+        loginBtn.style.display = 'inline';
+        logoutBtn.style.display = 'none';
+
+        // Na start pokazujemy O grupie i Kontakt
+        document.getElementById('o-grupie').style.display = 'block';
+        document.getElementById('kontakt').style.display = 'block';
+
+        // Inne sekcje ukryte
+        ['analizy', 'webinary'].forEach(id => {
+          document.getElementById(id).style.display = 'none';
+        });
       }
     }
 
-    // Po załadowaniu strony
-    updateUI();
+    // Funkcja do pokazywania wybranej sekcji i ukrywania pozostałych
+    function showSection(sectionId) {
+      sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (id === sectionId) {
+          el.style.display = 'block';
+        } else {
+          // Jeśli nie zalogowany, "kontakt" i "o-grupie" można pokazać razem tylko na starcie
+          // po kliknięciu pokazujemy tylko klikniętą sekcję
+          el.style.display = 'none';
+        }
+      });
+    }
 
-    // Proste przełączanie sekcji przy kliknięciu linków (scroll do sekcji)
-    document.querySelectorAll('nav a').forEach(link => {
+    // Obsługa kliknięcia w linki nawigacyjne
+    navLinks.forEach(link => {
       link.addEventListener('click', e => {
-        if (link.getAttribute('href').startsWith('#')) {
-          e.preventDefault();
-          const target = document.querySelector(link.getAttribute('href'));
-          if (target) {
-            window.scrollTo({
-              top: target.offsetTop - 70,
-              behavior: 'smooth'
-            });
-          }
+        e.preventDefault();
+        const href = link.getAttribute('href').substring(1); // bez #
+        if (!loggedIn) {
+          // Jeśli niezalogowany, pokazuj tylko wybraną sekcję
+          showSection(href);
+        } else {
+          // Jeśli zalogowany, pokazuj wybraną sekcję (analizy i webinary są widoczne)
+          showSection(href);
+        }
+        // Scroll do sekcji
+        const target = document.getElementById(href);
+        if (target) {
+          window.scrollTo({
+            top: target.offsetTop - 70,
+            behavior: 'smooth'
+          });
         }
       });
     });
+
+    // Pokazujemy początkowy stan UI
+    updateUI();
+
+    // Obsługa modal logowania/rejestracji
+    loginBtn.onclick = () => {
+      modal.style.display = "block";
+      showLoginSection();
+    };
+
+    logoutBtn.onclick = () => {
+      loggedIn = false;
+      updateUI();
+      alert("Wylogowano");
+    };
+
+    closeBtn.onclick = () => {
+      modal.style.display = "none";
+    };
+
+    window.onclick = event => {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    };
+
+    showRegister.onclick = () => {
+      registerSection.style.display = 'block';
+      loginSection.style.display = 'none';
+    };
+
+    showLogin.onclick = () => {
+      showLoginSection();
+    };
+
+    function showLoginSection() {
+      loginSection.style.display = 'block';
+      registerSection.style.display = 'none';
+    }
+
+    // Przykładowe formularze - tutaj można podpiąć prawdziwe API
+
+    // Rejestracja
+    document.getElementById('registerForm').onsubmit = e => {
+      e.preventDefault();
+      alert('Dziękujemy za rejestrację! Skontaktujemy się z Tobą wkrótce.');
+      modal.style.display = 'none';
+      // Tutaj wysyłasz dane do backendu
+    };
+
+    // Logowanie
+    document.getElementById('loginForm').onsubmit = e => {
+      e.preventDefault();
+      // Tu dodaj walidację i zapytanie do backendu
+      loggedIn = true;
+      updateUI();
+      modal.style.display = 'none';
+      alert('Zalogowano pomyślnie!');
+    };
+
   </script>
 </body>
 </html>
