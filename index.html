@@ -30,6 +30,7 @@
       color: #fff;
       text-decoration: none;
       font-weight: bold;
+      cursor: pointer;
     }
     nav a:hover {
       text-decoration: underline;
@@ -115,10 +116,10 @@
   </header>
 
   <nav>
-    <a href="#o-grupie">O grupie</a>
-    <a href="#analizy">Analizy</a>
-    <a href="#webinary">Webinary</a>
-    <a href="#kontakt">Kontakt</a>
+    <a href="#o-grupie" id="linkOgrupie">O grupie</a>
+    <a href="#analizy" id="linkAnalizy" style="display:none;">Analizy</a>
+    <a href="#webinary" id="linkWebinary" style="display:none;">Webinary</a>
+    <a href="#kontakt" id="linkKontakt">Kontakt</a>
     <a href="#" id="loginBtn">Zaloguj / Zarejestruj</a>
   </nav>
 
@@ -134,13 +135,13 @@
     </p>
   </section>
 
-  <section id="analizy">
+  <section id="analizy" style="display:none;">
     <h2>Analizy</h2>
     <p>Przykładowa analiza techniczna:</p>
     <img src="https://via.placeholder.com/800x400.png?text=Przykladowa+Analiza" alt="Analiza przykładowa"/>
   </section>
 
-  <section id="webinary">
+  <section id="webinary" style="display:none;">
     <h2>Webinary</h2>
     <p>Obejrzyj nasze materiały wideo:</p>
     <div class="video">
@@ -205,8 +206,20 @@
     const closeBtn = document.getElementsByClassName("close")[0];
     const loginBtn = document.getElementById("loginBtn");
 
-    loginBtn.onclick = function() {
-      modal.style.display = "block";
+    // Linki i sekcje
+    const linkAnalizy = document.getElementById("linkAnalizy");
+    const linkWebinary = document.getElementById("linkWebinary");
+    const sectionAnalizy = document.getElementById("analizy");
+    const sectionWebinary = document.getElementById("webinary");
+
+    // Pokaż modal logowania/rejestracji
+    loginBtn.onclick = function(e) {
+      e.preventDefault();
+      if (isLoggedIn()) {
+        logout();
+      } else {
+        modal.style.display = "block";
+      }
     }
 
     closeBtn.onclick = function() {
@@ -235,37 +248,80 @@
       loginSection.style.display = "block";
     }
 
-    // Obsługa formularza rejestracji
-    const registerForm = document.getElementById("registerForm");
-
-    registerForm.addEventListener("submit", async (e) => {
+    // Symulacja rejestracji - wyślij maila (tu pokazujemy alert)
+    document.getElementById("registerForm").addEventListener("submit", function(e) {
       e.preventDefault();
-      
-      const name = document.getElementById("name").value;
-      const email = document.getElementById("email").value;
+      const name = e.target.name.value.trim();
+      const email = e.target.email.value.trim();
 
-      const response = await fetch('https://rvc-new-backend.onrender.com/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, email }),
-      });
+      if (!name || !email) {
+        alert("Proszę wypełnić wszystkie pola.");
+        return;
+      }
 
-      const data = await response.json();
+      alert(`Dziękujemy za rejestrację, ${name}!\nNa adres ${email} został wysłany mail z prośbą o zatwierdzenie.`);
+      modal.style.display = "none";
+    });
 
-      if (response.ok) {
-        alert('Zgłoszenie wysłane! Administrator otrzymał powiadomienie.');
+    // Symulacja logowania (tu po prostu ustawi lokalnie)
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const email = e.target.loginEmail.value.trim();
+      const password = e.target.loginPassword.value.trim();
+
+      // Prosta symulacja: akceptujemy każde dane
+      if (email && password) {
+        localStorage.setItem("rsivscena_logged_in", "true");
+        modal.style.display = "none";
+        updateUI();
       } else {
-        alert('Wystąpił problem, spróbuj ponownie.');
+        alert("Proszę podać e-mail i hasło.");
       }
     });
 
-    // Obsługa formularza logowania (backend jeszcze nieobsłużony)
-    const loginForm = document.getElementById("loginForm");
-    loginForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      alert("Funkcja logowania zostanie podłączona w następnym kroku.");
+    function isLoggedIn() {
+      return localStorage.getItem("rsivscena_logged_in") === "true";
+    }
+
+    function logout() {
+      localStorage.removeItem("rsivscena_logged_in");
+      updateUI();
+      alert("Wylogowano.");
+    }
+
+    function updateUI() {
+      if (isLoggedIn()) {
+        linkAnalizy.style.display = "inline";
+        linkWebinary.style.display = "inline";
+        sectionAnalizy.style.display = "block";
+        sectionWebinary.style.display = "block";
+        loginBtn.textContent = "Wyloguj";
+      } else {
+        linkAnalizy.style.display = "none";
+        linkWebinary.style.display = "none";
+        sectionAnalizy.style.display = "none";
+        sectionWebinary.style.display = "none";
+        loginBtn.textContent = "Zaloguj / Zarejestruj";
+      }
+    }
+
+    // Po załadowaniu strony
+    updateUI();
+
+    // Proste przełączanie sekcji przy kliknięciu linków (scroll do sekcji)
+    document.querySelectorAll('nav a').forEach(link => {
+      link.addEventListener('click', e => {
+        if (link.getAttribute('href').startsWith('#')) {
+          e.preventDefault();
+          const target = document.querySelector(link.getAttribute('href'));
+          if (target) {
+            window.scrollTo({
+              top: target.offsetTop - 70,
+              behavior: 'smooth'
+            });
+          }
+        }
+      });
     });
   </script>
 </body>
