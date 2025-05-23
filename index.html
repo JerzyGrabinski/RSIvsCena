@@ -41,6 +41,7 @@
     </section>
   </main>
 
+  <!-- Modal logowania -->
   <div id="loginModal" class="modal" style="display:none;">
     <div class="modal-content">
       <span class="close" id="closeModal">&times;</span>
@@ -53,6 +54,7 @@
     </div>
   </div>
 
+  <!-- Skrypt logiki logowania -->
   <script>
     const loginBtn = document.getElementById("loginBtn");
     const logoutBtn = document.getElementById("logoutBtn");
@@ -76,7 +78,6 @@
 
     loginForm.onsubmit = (e) => {
       e.preventDefault();
-      // Uproszczona symulacja logowania
       localStorage.setItem("loggedIn", "true");
       showProtectedContent();
       loginModal.style.display = "none";
@@ -112,7 +113,6 @@
         hideProtectedContent();
       }
 
-      // Domyślnie przechodzimy do "O grupie"
       if (!window.location.hash || !loggedIn) {
         window.location.hash = "#o-grupie";
       }
