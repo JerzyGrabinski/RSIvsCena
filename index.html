@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>RSIvsCena</title>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -11,112 +11,85 @@
     <h1>RSIvsCena</h1>
     <nav>
       <a href="#o-grupie">O grupie</a>
-      <a href="#analizy" class="protected-link" style="display:none;">Analizy</a>
-      <a href="#webinary" class="protected-link" style="display:none;">Webinary</a>
       <a href="#kontakt">Kontakt</a>
-      <a href="#" id="loginBtn">Zaloguj / Zarejestruj</a>
-      <a href="#" id="logoutBtn" style="display:none;">Wyloguj się</a>
+      <a id="analizy-tab" href="#analizy" style="display: none">Analizy</a>
+      <a id="webinary-tab" href="#webinary" style="display: none">Webinary</a>
+      <a href="#" onclick="toggleModal()">Zaloguj / Zarejestruj</a>
     </nav>
   </header>
 
   <main>
     <section id="o-grupie">
       <h2>O grupie</h2>
-      <p>Grupa RSIvsCena skupia się na analizie technicznej i edukacji inwestycyjnej...</p>
-    </section>
-
-    <section id="analizy" class="protected-section" style="display:none;">
-      <h2>Analizy</h2>
-      <p>Dostępne tylko po zalogowaniu.</p>
-    </section>
-
-    <section id="webinary" class="protected-section" style="display:none;">
-      <h2>Webinary</h2>
-      <p>Dostępne tylko po zalogowaniu.</p>
+      <p>Tu znajdziesz informacje o grupie RSIvsCena.</p>
     </section>
 
     <section id="kontakt">
       <h2>Kontakt</h2>
-      <p>Skontaktuj się z nami pod adresem email: kontakt@rsivscena.pl</p>
+      <p>Formularz kontaktowy lub dane kontaktowe.</p>
+    </section>
+
+    <section id="analizy" style="display: none">
+      <h2>Analizy</h2>
+      <p>Treści dostępne tylko po zalogowaniu.</p>
+    </section>
+
+    <section id="webinary" style="display: none">
+      <h2>Webinary</h2>
+      <p>Treści dostępne tylko po zalogowaniu.</p>
     </section>
   </main>
 
-  <!-- Modal logowania -->
-  <div id="loginModal" class="modal" style="display:none;">
+  <div id="authModal" class="modal" style="display: none;">
     <div class="modal-content">
-      <span class="close" id="closeModal">&times;</span>
-      <h2>Zaloguj / Zarejestruj</h2>
-      <form id="loginForm">
-        <input type="email" id="email" placeholder="Email" required />
-        <input type="password" id="password" placeholder="Hasło" required />
-        <button type="submit">Zaloguj</button>
-      </form>
+      <span class="close" onclick="toggleModal()">&times;</span>
+      <div id="login-form">
+        <h2>Logowanie</h2>
+        <input type="email" id="loginEmail" placeholder="Email" />
+        <input type="password" id="loginPassword" placeholder="Hasło" />
+        <button onclick="handleLogin()">Zaloguj</button>
+        <p>Nie masz konta? <a href="#" onclick="showRegister()">Zarejestruj się</a></p>
+      </div>
+      <div id="register-form" style="display: none;">
+        <h2>Rejestracja</h2>
+        <input type="email" id="registerEmail" placeholder="Email" />
+        <input type="password" id="registerPassword" placeholder="Hasło" />
+        <button onclick="handleRegister()">Zarejestruj</button>
+        <p>Masz już konto? <a href="#" onclick="showLogin()">Zaloguj się</a></p>
+      </div>
     </div>
   </div>
 
-  <!-- Skrypt logiki logowania -->
   <script>
-    const loginBtn = document.getElementById("loginBtn");
-    const logoutBtn = document.getElementById("logoutBtn");
-    const loginModal = document.getElementById("loginModal");
-    const closeModal = document.getElementById("closeModal");
-    const loginForm = document.getElementById("loginForm");
+    function toggleModal() {
+      const modal = document.getElementById('authModal');
+      modal.style.display = modal.style.display === 'none' ? 'block' : 'none';
+    }
 
-    loginBtn.onclick = () => {
-      loginModal.style.display = "block";
-    };
+    function showRegister() {
+      document.getElementById('login-form').style.display = 'none';
+      document.getElementById('register-form').style.display = 'block';
+    }
 
-    closeModal.onclick = () => {
-      loginModal.style.display = "none";
-    };
+    function showLogin() {
+      document.getElementById('register-form').style.display = 'none';
+      document.getElementById('login-form').style.display = 'block';
+    }
 
-    window.onclick = (event) => {
-      if (event.target === loginModal) {
-        loginModal.style.display = "none";
-      }
-    };
+    function handleLogin() {
+      // Tu będzie logika logowania
+      document.getElementById('analizy-tab').style.display = 'inline';
+      document.getElementById('webinary-tab').style.display = 'inline';
+      document.getElementById('analizy').style.display = 'block';
+      document.getElementById('webinary').style.display = 'block';
+      toggleModal();
+    }
 
-    loginForm.onsubmit = (e) => {
-      e.preventDefault();
-      localStorage.setItem("loggedIn", "true");
-      showProtectedContent();
-      loginModal.style.display = "none";
-    };
-
-    logoutBtn.onclick = () => {
-      localStorage.removeItem("loggedIn");
-      hideProtectedContent();
-      logoutBtn.style.display = "none";
-      loginBtn.style.display = "inline";
-      window.location.hash = "#o-grupie";
-    };
-
-    const showProtectedContent = () => {
-      document.querySelectorAll(".protected-link").forEach(link => link.style.display = "inline");
-      document.querySelectorAll(".protected-section").forEach(sec => sec.style.display = "block");
-      logoutBtn.style.display = "inline";
-      loginBtn.style.display = "none";
-    };
-
-    const hideProtectedContent = () => {
-      document.querySelectorAll(".protected-link").forEach(link => link.style.display = "none");
-      document.querySelectorAll(".protected-section").forEach(sec => sec.style.display = "none");
-      logoutBtn.style.display = "none";
-      loginBtn.style.display = "inline";
-    };
-
-    window.onload = () => {
-      const loggedIn = localStorage.getItem("loggedIn");
-      if (loggedIn) {
-        showProtectedContent();
-      } else {
-        hideProtectedContent();
-      }
-
-      if (!window.location.hash || !loggedIn) {
-        window.location.hash = "#o-grupie";
-      }
-    };
+    function handleRegister() {
+      // Tu będzie logika rejestracji
+      alert('Dane rejestracyjne wysłane do zatwierdzenia.');
+      toggleModal();
+    }
   </script>
 </body>
 </html>
